@@ -23,6 +23,6 @@ app.use(function (req, res, next) {
 
 require("./src/urls")(app);
 
-app.listen(8000, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running...');
 });
