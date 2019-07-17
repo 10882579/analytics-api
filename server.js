@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 
-const DB_LINK = process.env.MONGODB_URI || 'mongodb://localhost/analyticsdb';
-const ORIGIN = process.env.ORIGIN || 'http://localhost:3000';
+const DB_LINK = process.env.MONGODB_URI || require("./localconfig").MONGODB_URI;
+const ORIGIN = process.env.ORIGIN || require("./localconfig").CORS_SERVER;
 
 mongoose.connect(DB_LINK, {useNewUrlParser: true});
 mongoose.connection.on("open", () => {
