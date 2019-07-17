@@ -103,7 +103,19 @@ module.exports = {
     checkSession(token).then( () => {
       Contractor.create(req.body, (err, doc) => {
         if (err) res.status(400).send({added: false});
-        res.status(200).send({added: true});
+        res.status(200).send(doc);
+      })
+    })
+    .catch( () => res.status(403).send({}) );
+  },
+  contractorList: (req, res) => {
+    const token = req.headers['x-auth-token'];
+
+    checkSession(token).then( () => {
+      Contractor.find({}).select("-__v -createdAt -updatedAt")
+      .exec( (err, list) => {
+        if (err) res.status(400).send({});
+        res.status(200).send(list);
       })
     })
     .catch( () => res.status(403).send({}) );
@@ -128,5 +140,5 @@ module.exports = {
       })
     })
     .catch( () => res.status(403).send({}) );
-  }
+  },
 }

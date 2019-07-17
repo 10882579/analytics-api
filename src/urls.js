@@ -3,6 +3,7 @@ const controllers = require("./controllers");
 module.exports = (app) => {
   app.get("/check-session/", controllers.checkSession);
   app.get("/products/list/", controllers.productList);
+  app.get("/contractors/list/", controllers.contractorList);
 
   app.post("/login/", controllers.login);
   app.post("/register/", controllers.register);
