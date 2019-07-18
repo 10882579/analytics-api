@@ -25,7 +25,7 @@ const Contractor = new Schema({
 
 const Sale = new Schema({
   id: Schema.Types.ObjectId,
-  custormer: { type: Schema.Types.ObjectId, ref: 'Contractor' },
+  customer: { type: Schema.Types.ObjectId, ref: 'Contractor' },
   product: [Product],
   delivered: { type: Boolean, default: false}
 
