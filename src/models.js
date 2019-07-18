@@ -14,7 +14,8 @@ const Product = new Schema({
   size: String,
   type: String,
   price: Number,
-  amount: { type: Number, required: false }
+  amount: { type: Number, required: false },
+  delivered: { type: Boolean, default: false}
 }, {timestamps: true});
 
 const Contractor = new Schema({
@@ -27,8 +28,6 @@ const Sale = new Schema({
   id: Schema.Types.ObjectId,
   customer: { type: Schema.Types.ObjectId, ref: 'Contractor' },
   product: [Product],
-  delivered: { type: Boolean, default: false}
-
 }, {timestamps: true})
 
 module.exports = {
