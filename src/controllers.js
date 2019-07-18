@@ -135,10 +135,9 @@ module.exports = {
               price: product.price,
               amount: data.amount
             })
-            sale.save();
-            sale.populate("customer", (err, sale) => {
-              res.status(200).send(sale);
-            })
+            sale.save( (err, doc) => {
+              res.status(200).send(doc.product);
+            });
           })
         }
         else{
