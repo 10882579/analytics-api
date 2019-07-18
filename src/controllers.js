@@ -125,20 +125,39 @@ module.exports = {
     const data = req.body;
 
     checkSession(token).then( () => {
-      Sale.create({customer: data.customer}, (err, doc) => {
-        if (err) res.status(400).send({added: false});
-
-        doc.product.push({
-          name: data.product.name,
-          type: data.product.type,
-          size: data.product.size,
-          price: data.product.price,
-          amount: data.product.amount
-        })
-        doc.save();
-        res.status(200).send({added: true});
+      Product.findById(data.product, (err, product) => {
+        if(product){
+          Sale.findOneAndUpdate({customer: data.customer}, {}, {upsert: true, new: true}, (err, sale) => {
+            sale.product.push({
+              name: product.name,
+              type: product.type,
+              size: product.size,
+              price: product.price,
+              amount: data.amount
+            })
+            sale.save();
+            sale.populate("customer", (err, sale) => {
+              res.status(200).send(sale);
+            })
+          })
+        }
+        else{
+          res.status(400).send({added: false});
+        }
       })
     })
     .catch( () => res.status(403).send({}) );
   },
+  contractorSales: (req, res) => {
+    const token = req.headers['x-auth-token'];
+    const { id } = req.params;
+    
+    checkSession(token).then( () => {
+      Sale.findOne({customer: id}, (err, sale) => {
+        if (err) res.status(404).send({});
+        res.status(200).send(sale);
+      })
+    })
+    .catch( () => res.status(403).send({}) );
+  }
 }
