@@ -153,8 +153,8 @@ module.exports = {
     
     checkSession(token).then( () => {
       Sale.findOne({customer: id}, (err, sale) => {
-        if (err) res.status(404).send({});
-        res.status(200).send(sale.product);
+        if (!sale) res.status(200).send([]);
+        if (sale) res.status(200).send(sale.product);
       })
     })
     .catch( () => res.status(403).send({}) );
