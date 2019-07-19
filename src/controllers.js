@@ -112,7 +112,7 @@ module.exports = {
     const token = req.headers['x-auth-token'];
 
     checkSession(token).then( () => {
-      Contractor.find({}).select("-__v -createdAt -updatedAt")
+      Contractor.find({}).select("-__v -createdAt -updatedAt -sales")
       .exec( (err, list) => {
         if (err) res.status(400).send({});
         res.status(200).send(list);
@@ -122,27 +122,23 @@ module.exports = {
   },
   addNewSale: (req, res) => {
     const token = req.headers['x-auth-token'];
-    const data = req.body;
-
+    const contrId = req.body.customer;
+    const prodId = req.body.product;
+    
     checkSession(token).then( () => {
-      Product.findById(data.product, (err, product) => {
-        if(product){
-          Sale.findOneAndUpdate({customer: data.customer}, {}, {upsert: true, new: true}, (err, sale) => {
-            sale.product.push({
-              name: product.name,
-              type: product.type,
-              size: product.size,
-              price: product.price,
-              amount: data.amount
+      Contractor.findById(contrId, (err, contractor) => {
+        Product.findById(prodId, (err, product) => {
+          if(contractor && product){
+            Sale.create(req.body, (err, sale) => {
+              sale.populate('product', (err, sale) => {
+                res.status(200).send(sale);
+              })
             })
-            sale.save( (err, doc) => {
-              res.status(200).send(doc.product);
-            });
-          })
-        }
-        else{
-          res.status(400).send({added: false});
-        }
+          }
+          else{
+            res.status(400).send({added: false});
+          }
+        });
       })
     })
     .catch( () => res.status(403).send({}) );
@@ -152,9 +148,10 @@ module.exports = {
     const { id } = req.params;
     
     checkSession(token).then( () => {
-      Sale.findOne({customer: id}, (err, sale) => {
+      Sale.find({customer: id})
+      .populate("product").select("-customer").exec( (err, sale) => {
         if (!sale) res.status(200).send([]);
-        if (sale) res.status(200).send(sale.product);
+        if (sale) res.status(200).send(sale);
       })
     })
     .catch( () => res.status(403).send({}) );

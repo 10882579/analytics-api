@@ -8,6 +8,14 @@ const Admin = new Schema({
   session: String,
 })
 
+const Contractor = new Schema({
+  id: Schema.Types.ObjectId,
+  name: String,
+  email: String,
+  phoneNumber: String,
+  location: String,
+}, {timestamps: true})
+
 const Product = new Schema({
   id: Schema.Types.ObjectId,
   name: String,
@@ -15,19 +23,14 @@ const Product = new Schema({
   type: String,
   price: Number,
   amount: { type: Number, required: false },
-  delivered: { type: Boolean, default: false}
 }, {timestamps: true});
-
-const Contractor = new Schema({
-  id: Schema.Types.ObjectId,
-  name: String,
-  location: String,
-}, {timestamps: true})
 
 const Sale = new Schema({
   id: Schema.Types.ObjectId,
   customer: { type: Schema.Types.ObjectId, ref: 'Contractor' },
-  product: [Product],
+  product: { type: Schema.Types.ObjectId, ref: 'Product' },
+  amount: Number,
+  deliverBy: Date
 }, {timestamps: true})
 
 module.exports = {
