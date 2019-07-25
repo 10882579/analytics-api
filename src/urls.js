@@ -5,6 +5,7 @@ module.exports = (app) => {
   app.get("/products/list/", controllers.productList);
   app.get("/contractors/list/", controllers.contractorList);
   app.get("/contractors/:id/sales/", controllers.contractorSales);
+  app.get("/contractors/:id/payments/", controllers.contractorPayments);
 
   app.post("/login/", controllers.login);
   app.post("/register/", controllers.register);
@@ -12,4 +13,5 @@ module.exports = (app) => {
   app.post("/products/:id/delete/", controllers.deleteProduct);
   app.post("/contractors/add-new/", controllers.addNewContractor);
   app.post("/sales/add-new/", controllers.addNewSale);
+  app.post("/payments/add-new/", controllers.addNewPayment);
 }

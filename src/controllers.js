@@ -1,4 +1,4 @@
-const { Admin, Product, Sale, Contractor } = require('./models');
+const { Admin, Product, Sale, Contractor, Payment } = require('./models');
 
 const randomToken = require('random-token');
 const bcrypt = require("bcrypt");
@@ -155,5 +155,36 @@ module.exports = {
       })
     })
     .catch( () => res.status(403).send({}) );
-  }
+  },
+  addNewPayment: (req, res) => {
+    const token = req.headers['x-auth-token'];
+    const contrId = req.body.customer;
+    
+    checkSession(token).then( () => {
+      Contractor.findById(contrId, (err, contractor) => {
+        if(contractor){
+          Payment.create(req.body, (err, payment) => {
+            res.status(200).send(payment);
+          })
+        }
+        else{
+          res.status(400).send({added: false});
+        }
+      })
+    })
+    .catch( () => res.status(403).send({}) );
+  },
+  contractorPayments: (req, res) => {
+    const token = req.headers['x-auth-token'];
+    const { id } = req.params;
+    
+    checkSession(token).then( () => {
+      Payment.find({customer: id})
+      .select("-customer").exec( (err, payments) => {
+        if (!payments) res.status(200).send([]);
+        if (payments) res.status(200).send(payments);
+      })
+    })
+    .catch( () => res.status(403).send({}) );
+  },
 }

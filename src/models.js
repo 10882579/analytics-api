@@ -33,9 +33,17 @@ const Sale = new Schema({
   deliverBy: Date
 }, {timestamps: true})
 
+const Payment = new Schema({
+  id: Schema.Types.ObjectId,
+  customer: { type: Schema.Types.ObjectId, ref: 'Contractor' },
+  amount: Number,
+  type: String
+}, {timestamps: true})
+
 module.exports = {
   Admin: mongoose.model("Admin", Admin),
   Product: mongoose.model("Product", Product),
   Contractor: mongoose.model("Contractor", Contractor),
-  Sale: mongoose.model("Sale", Sale)
+  Sale: mongoose.model("Sale", Sale),
+  Payment: mongoose.model("Payment", Payment),
 }
